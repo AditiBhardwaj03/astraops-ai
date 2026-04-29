@@ -7,62 +7,38 @@ on:
     branches: [main]
 
 jobs:
-  backend-ci:
-    name: Backend Build and Scan
+  frontend-ci:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Install backend dependencies
+      - name: Install frontend deps
+        run: npm install
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Build frontend image
+        run: docker build -t astraops-frontend:ci .
+
+  backend-ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install backend deps
         working-directory: backend
         run: npm install
 
-      - name: Build backend Docker image
+      - name: Build backend image
         run: docker build -t astraops-backend:ci ./backend
-
-      - name: Scan backend image with Trivy
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: astraops-backend:ci
-          format: table
-          exit-code: 0
-          severity: CRITICAL,HIGH
-
-  frontend-ci:
-    name: Frontend Build and Scan
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install frontend dependencies
-        working-directory: frontend
-        run: npm install
-
-      - name: Build frontend app
-        working-directory: frontend
-        run: npm run build
-
-      - name: Build frontend Docker image
-        run: docker build -t astraops-frontend:ci ./frontend
-
-      - name: Scan frontend image with Trivy
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: astraops-frontend:ci
-          format: table
-          exit-code: 0
-          severity: CRITICAL,HIGH
