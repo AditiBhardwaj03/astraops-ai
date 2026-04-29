@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: astraops-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: astraops-backend
+  template:
+    metadata:
+      labels:
+        app: astraops-backend
+    spec:
+      containers:
+        - name: backend
+          image: astraops-backend
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 5001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: astraops-backend-service
+spec:
+  selector:
+    app: astraops-backend
+  ports:
+    - port: 5001
+      targetPort: 5001

@@ -1,0 +1,16 @@
+services:
+  backend:
+    build: ./backend
+    container_name: astraops-backend
+    ports:
+      - "5001:5001"
+
+  frontend:
+    build: ./frontend
+    container_name: astraops-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_BACKEND_URL=http://localhost:5001
+    depends_on:
+      - backend
