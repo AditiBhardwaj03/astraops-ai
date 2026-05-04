@@ -16,8 +16,11 @@ app.get("/health", (req, res) => {
 });
 
 app.get("/api/message", (req, res) => {
-	res.json({
-		message: "AstraOps backend is running successfully 🚀",
+	app.get("/api/message", (req, res) => {
+		res.json({
+			message:
+				"AstraOps backend is live. CI/CD, Docker, and Kubernetes integration verified.",
+		});
 	});
 });
 
